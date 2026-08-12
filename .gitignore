@@ -1,0 +1,20 @@
+# Ruflo local secrets and runtime data
+.env
+.env.local
+.env.*.local
+.claude-flow/data/
+.claude-flow/logs/
+.claude-flow/sessions/
+.claude-flow/daemon.pid
+.claude-flow/daemon-state.json
+
+# Local memory/vector/swarm databases (machine-specific, not portable)
+.swarm/
+.claude/memory.db
+.claude/proven-config.json
+.claude/.proven-config-version
+ruvector.db
+.serena/project.local.yml
+
+# Caches
+.pytest_cache/
