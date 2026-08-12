@@ -18,3 +18,7 @@ ruvector.db
 
 # Caches
 .pytest_cache/
+
+# Runtime metrics/policy state (constantly rewritten by hooks/agents)
+.claude-flow/metrics/
+.claude-flow/policy/
