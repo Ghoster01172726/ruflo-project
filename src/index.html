@@ -105,16 +105,16 @@
   <!-- ============ PREDICT TAB ============ -->
   <section class="panel" id="tab-predict" data-panel="predict" hidden>
 
-    <div class="filterbar">
-      <button class="filterbar__btn is-active">
+    <div class="filterbar" data-role="predict-filter">
+      <button class="filterbar__btn is-active" data-mode="tournament">
         <span class="filterbar__btn-title">Только Инт</span>
         <span class="filterbar__btn-sub">Считаем по турниру</span>
       </button>
-      <button class="filterbar__btn">
+      <button class="filterbar__btn" data-mode="season">
         <span class="filterbar__btn-title">По сезону</span>
         <span class="filterbar__btn-sub">Как до старта</span>
       </button>
-      <button class="filterbar__btn filterbar__btn--ghost">
+      <button class="filterbar__btn filterbar__btn--ghost" data-mode="freak">
         <span class="filterbar__btn-title">◈ Фрик</span>
         <span class="filterbar__btn-sub">Инт пошёл вразнос</span>
       </button>
@@ -131,50 +131,26 @@
 
       <aside class="score-card">
         <p class="score-card__label">Прогноз очков</p>
-        <p class="score-card__value">2 338</p>
-        <p class="score-card__desc">В среднем <strong>5,2</strong> верных матча из четырнадцати <span class="delta delta--down">−15</span></p>
+        <p class="score-card__value" id="score-value">2 338</p>
+        <p class="score-card__desc">В среднем <strong id="score-avg">5,2</strong> верных матча из четырнадцати <span class="delta delta--down" id="score-delta">−15</span></p>
 
         <div class="score-card__row">
           <div>
             <span class="score-card__row-label">Верных матчей</span>
-            <span class="score-card__row-value">5,2</span>
+            <span class="score-card__row-value" id="score-correct">5,2</span>
           </div>
           <div>
             <span class="score-card__row-label">Обычно</span>
-            <span class="score-card__row-value">1 800</span>
+            <span class="score-card__row-value" id="score-usual">1 800</span>
           </div>
           <div>
             <span class="score-card__row-label">Если повезёт</span>
-            <span class="score-card__row-value">5 400</span>
+            <span class="score-card__row-value" id="score-lucky">5 400</span>
           </div>
         </div>
 
-        <div class="score-card__chances">
+        <div class="score-card__chances" id="score-chances">
           <p class="score-card__chances-title">Шанс набрать</p>
-          <div class="chance-row">
-            <span class="chance-row__n">6</span>
-            <span class="chance-row__pct">44%</span>
-            <span class="chance-row__bar"><i style="width:44%"></i></span>
-            <span class="chance-row__pts">2 520</span>
-          </div>
-          <div class="chance-row">
-            <span class="chance-row__n">8</span>
-            <span class="chance-row__pct">20%</span>
-            <span class="chance-row__bar"><i style="width:20%"></i></span>
-            <span class="chance-row__pts">4 320</span>
-          </div>
-          <div class="chance-row">
-            <span class="chance-row__n">10</span>
-            <span class="chance-row__pct">5,8%</span>
-            <span class="chance-row__bar"><i style="width:6%"></i></span>
-            <span class="chance-row__pts">6 600</span>
-          </div>
-          <div class="chance-row">
-            <span class="chance-row__n">14</span>
-            <span class="chance-row__pct chance-row__pct--min">&lt;0,1%</span>
-            <span class="chance-row__bar"><i style="width:1%"></i></span>
-            <span class="chance-row__pts">12 000</span>
-          </div>
         </div>
 
         <div class="score-card__dist">
@@ -204,15 +180,15 @@
         <p class="props-col__label">Свойства героя <span class="dot dot--red"></span></p>
         <div class="prop-row">
           <select class="prop-select"><option>Ку/М</option></select>
-          <input class="prop-input" value="160">
+          <input class="prop-input" type="number" inputmode="numeric" data-group="hero" value="160">
         </div>
         <div class="prop-row">
           <select class="prop-select"><option>Убийства терзателей</option></select>
-          <input class="prop-input" value="160">
+          <input class="prop-input" type="number" inputmode="numeric" data-group="hero" value="160">
         </div>
         <div class="prop-row">
           <select class="prop-select"><option>Смерти</option></select>
-          <input class="prop-input" value="160">
+          <input class="prop-input" type="number" inputmode="numeric" data-group="hero" value="160">
         </div>
       </div>
 
@@ -220,11 +196,11 @@
         <p class="props-col__label">Свойства команды <span class="dot dot--green"></span></p>
         <div class="prop-row">
           <select class="prop-select"><option>Смерти</option></select>
-          <input class="prop-input" value="140">
+          <input class="prop-input" type="number" inputmode="numeric" data-group="team" value="140">
         </div>
         <div class="prop-row">
           <select class="prop-select"><option>Убийства</option></select>
-          <input class="prop-input" value="140">
+          <input class="prop-input" type="number" inputmode="numeric" data-group="team" value="140">
         </div>
       </div>
     </div>
@@ -242,19 +218,19 @@
 
       <div class="coach-row">
         <p class="coach-row__label">Префикс выгоднее</p>
-        <div class="chip-row">
-          <span class="chip">Потусторонний <b>+721</b></span>
-          <span class="chip">Героический <b>+666</b></span>
-          <span class="chip">Элементальный <b>+600</b></span>
+        <div class="chip-row" data-role="coach-chips" data-group="prefix">
+          <button type="button" class="chip chip--pick" data-bonus="721">Потусторонний <b>+721</b></button>
+          <button type="button" class="chip chip--pick" data-bonus="666">Героический <b>+666</b></button>
+          <button type="button" class="chip chip--pick" data-bonus="600">Элементальный <b>+600</b></button>
         </div>
       </div>
 
       <div class="coach-row">
         <p class="coach-row__label">Суффикс выгоднее</p>
-        <div class="chip-row">
-          <span class="chip">Творец победы <b>+1 159</b></span>
-          <span class="chip">Везунчик <b>+580</b></span>
-          <span class="chip">Аутсайдер <b>+440</b></span>
+        <div class="chip-row" data-role="coach-chips" data-group="suffix">
+          <button type="button" class="chip chip--pick" data-bonus="1159">Творец победы <b>+1 159</b></button>
+          <button type="button" class="chip chip--pick" data-bonus="580">Везунчик <b>+580</b></button>
+          <button type="button" class="chip chip--pick" data-bonus="440">Аутсайдер <b>+440</b></button>
         </div>
       </div>
 
@@ -273,14 +249,20 @@
 
     <div class="result-block">
       <p class="result-block__eyebrow">Результат</p>
-      <h3 class="result-block__title">Лучшие связки</h3>
+      <div class="result-block__head">
+        <h3 class="result-block__title">Лучшие связки</h3>
+        <span class="result-block__stat">
+          <span class="result-block__stat-label">Средний счёт за игру</span>
+          <span class="result-block__stat-value" id="avg-score-stat">—</span>
+        </span>
+      </div>
 
       <div class="result-grid" id="result-grid"></div>
     </div>
 
     <div class="fantasy-actions">
-      <button class="btn btn--ghost">Взять подсказку</button>
-      <button class="btn btn--primary">Подобрать состав</button>
+      <button class="btn btn--ghost" id="btn-hint">Взять подсказку</button>
+      <button class="btn btn--primary" id="btn-recalc">Подобрать состав</button>
     </div>
   </section>
 
