@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The International 2026 — Прогнозы и Фэнтези</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="#top">
+      <span class="brand__mark">TI</span>
+      <span class="brand__text">
+        <span class="brand__title">The International 2026</span>
+        <span class="brand__crumb">Главная / Плей-офф</span>
+      </span>
+    </a>
+
+    <nav class="tabs" role="tablist" aria-label="Разделы">
+      <button class="tabs__btn is-active" data-tab="bracket" role="tab" aria-selected="true">Плей-офф</button>
+      <button class="tabs__btn" data-tab="predict" role="tab" aria-selected="false">Прогнозы</button>
+      <button class="tabs__btn" data-tab="fantasy" role="tab" aria-selected="false">
+        Калькулятор фэнтези
+        <span class="pill pill--live">обновлено</span>
+      </button>
+    </nav>
+
+    <div class="topbar__actions">
+      <button class="lang-toggle" aria-label="Переключить язык">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Компендиум · Сезон 2026</p>
+      <h1 class="hero__title">Кто дойдёт до Аегиса —<br>решают не боги, а <span class="hero__accent">карты.</span></h1>
+      <p class="hero__sub">Верхняя и нижняя сетка плей-офф, live-прогнозы по каждой паре и калькулятор фэнтези-очков,
+        обученный на 3 009 картах последних 25 турниров.</p>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-num">16</span>
+          <span class="hero__stat-label">команд в сетке</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-num">3 009</span>
+          <span class="hero__stat-label">карт в базе модели</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-num">20–24</span>
+          <span class="hero__stat-label">августа, плей-офф</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BRACKET TAB ============ -->
+  <section class="panel" id="tab-bracket" data-panel="bracket">
+
+    <div class="filterbar">
+      <button class="filterbar__btn is-active">
+        <span class="filterbar__btn-title">Общий рейтинг</span>
+        <span class="filterbar__btn-sub">Сезон и турнир</span>
+      </button>
+      <button class="filterbar__btn">
+        <span class="filterbar__btn-title">Только Инт</span>
+        <span class="filterbar__btn-sub">Считаем по турниру</span>
+      </button>
+      <button class="filterbar__btn">
+        <span class="filterbar__btn-title">По сезону</span>
+        <span class="filterbar__btn-sub">Как до старта</span>
+      </button>
+      <button class="filterbar__btn filterbar__btn--ghost">
+        <span class="filterbar__btn-title">◈ Фрик</span>
+        <span class="filterbar__btn-sub">Инт пошёл вразнос</span>
+      </button>
+    </div>
+
+    <div class="bracket-block">
+      <h2 class="bracket-block__title">Верхняя сетка</h2>
+      <div class="bracket" id="upper-bracket"></div>
+    </div>
+
+    <div class="bracket-block">
+      <h2 class="bracket-block__title">Нижняя сетка</h2>
+      <div class="bracket bracket--lower" id="lower-bracket"></div>
+    </div>
+
+    <div class="bracket-actions">
+      <button class="btn btn--ghost" id="btn-fill">Заполнить по модели</button>
+      <button class="btn btn--ghost-danger" id="btn-clear">Очистить</button>
+      <button class="btn btn--primary" id="btn-share">Поделиться прогнозом</button>
+    </div>
+  </section>
+
+  <!-- ============ PREDICT TAB ============ -->
+  <section class="panel" id="tab-predict" data-panel="predict" hidden>
+
+    <div class="filterbar">
+      <button class="filterbar__btn is-active">
+        <span class="filterbar__btn-title">Только Инт</span>
+        <span class="filterbar__btn-sub">Считаем по турниру</span>
+      </button>
+      <button class="filterbar__btn">
+        <span class="filterbar__btn-title">По сезону</span>
+        <span class="filterbar__btn-sub">Как до старта</span>
+      </button>
+      <button class="filterbar__btn filterbar__btn--ghost">
+        <span class="filterbar__btn-title">◈ Фрик</span>
+        <span class="filterbar__btn-sub">Инт пошёл вразнос</span>
+      </button>
+    </div>
+
+    <p class="predict-note">Проценты в карточке — шанс победы именно в этой паре. Модель ценит не самых
+      сильных, а набор с максимумом стабильности — иногда выгоднее поставить на того, кто чаще до этого матча доходил.</p>
+
+    <div class="predict-layout">
+      <div class="bracket-block bracket-block--flex">
+        <h2 class="bracket-block__title">Плей-офф · верхняя сетка</h2>
+        <div class="bracket bracket--predict" id="predict-bracket"></div>
+      </div>
+
+      <aside class="score-card">
+        <p class="score-card__label">Прогноз очков</p>
+        <p class="score-card__value">2 338</p>
+        <p class="score-card__desc">В среднем <strong>5,2</strong> верных матча из четырнадцати <span class="delta delta--down">−15</span></p>
+
+        <div class="score-card__row">
+          <div>
+            <span class="score-card__row-label">Верных матчей</span>
+            <span class="score-card__row-value">5,2</span>
+          </div>
+          <div>
+            <span class="score-card__row-label">Обычно</span>
+            <span class="score-card__row-value">1 800</span>
+          </div>
+          <div>
+            <span class="score-card__row-label">Если повезёт</span>
+            <span class="score-card__row-value">5 400</span>
+          </div>
+        </div>
+
+        <div class="score-card__chances">
+          <p class="score-card__chances-title">Шанс набрать</p>
+          <div class="chance-row">
+            <span class="chance-row__n">6</span>
+            <span class="chance-row__pct">44%</span>
+            <span class="chance-row__bar"><i style="width:44%"></i></span>
+            <span class="chance-row__pts">2 520</span>
+          </div>
+          <div class="chance-row">
+            <span class="chance-row__n">8</span>
+            <span class="chance-row__pct">20%</span>
+            <span class="chance-row__bar"><i style="width:20%"></i></span>
+            <span class="chance-row__pts">4 320</span>
+          </div>
+          <div class="chance-row">
+            <span class="chance-row__n">10</span>
+            <span class="chance-row__pct">5,8%</span>
+            <span class="chance-row__bar"><i style="width:6%"></i></span>
+            <span class="chance-row__pts">6 600</span>
+          </div>
+          <div class="chance-row">
+            <span class="chance-row__n">14</span>
+            <span class="chance-row__pct chance-row__pct--min">&lt;0,1%</span>
+            <span class="chance-row__bar"><i style="width:1%"></i></span>
+            <span class="chance-row__pts">12 000</span>
+          </div>
+        </div>
+
+        <div class="score-card__dist">
+          <p class="score-card__chances-title">Распределение верных матчей</p>
+          <div class="dist-chart" id="dist-chart"></div>
+        </div>
+
+        <button class="btn btn--primary btn--full">Поделиться прогнозом</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ FANTASY TAB ============ -->
+  <section class="panel" id="tab-fantasy" data-panel="fantasy" hidden>
+
+    <div class="fantasy-head">
+      <div>
+        <h2 class="fantasy-head__title">Калькулятор фэнтези</h2>
+        <p class="fantasy-head__sub">Задайте свойства карточки игрока и тренерский титул — модель подберёт
+          связку с максимальным ожидаемым числом очков.</p>
+      </div>
+      <button class="btn btn--ghost" id="btn-props">Тонкая настройка ▾</button>
+    </div>
+
+    <div class="props-grid">
+      <div class="props-col">
+        <p class="props-col__label">Свойства героя <span class="dot dot--red"></span></p>
+        <div class="prop-row">
+          <select class="prop-select"><option>Ку/М</option></select>
+          <input class="prop-input" value="160">
+        </div>
+        <div class="prop-row">
+          <select class="prop-select"><option>Убийства терзателей</option></select>
+          <input class="prop-input" value="160">
+        </div>
+        <div class="prop-row">
+          <select class="prop-select"><option>Смерти</option></select>
+          <input class="prop-input" value="160">
+        </div>
+      </div>
+
+      <div class="props-col">
+        <p class="props-col__label">Свойства команды <span class="dot dot--green"></span></p>
+        <div class="prop-row">
+          <select class="prop-select"><option>Смерти</option></select>
+          <input class="prop-input" value="140">
+        </div>
+        <div class="prop-row">
+          <select class="prop-select"><option>Убийства</option></select>
+          <input class="prop-input" value="140">
+        </div>
+      </div>
+    </div>
+
+    <p class="props-hint">Процент вписывайте ровно тот, что указан на эмблеме в игре — там уже сложены
+      базовые веса. Если в игре показано 160%, это уже с бонусом. Какие свойства выгоднее — смотрите в блоке ниже.</p>
+
+    <div class="coach-block">
+      <h3 class="coach-block__title">Тренерский титул</h3>
+
+      <div class="coach-row">
+        <p class="coach-row__label">Префикс</p>
+        <select class="prop-select prop-select--wide"><option>Без префикса</option></select>
+      </div>
+
+      <div class="coach-row">
+        <p class="coach-row__label">Префикс выгоднее</p>
+        <div class="chip-row">
+          <span class="chip">Потусторонний <b>+721</b></span>
+          <span class="chip">Героический <b>+666</b></span>
+          <span class="chip">Элементальный <b>+600</b></span>
+        </div>
+      </div>
+
+      <div class="coach-row">
+        <p class="coach-row__label">Суффикс выгоднее</p>
+        <div class="chip-row">
+          <span class="chip">Творец победы <b>+1 159</b></span>
+          <span class="chip">Везунчик <b>+580</b></span>
+          <span class="chip">Аутсайдер <b>+440</b></span>
+        </div>
+      </div>
+
+      <div class="pick-table">
+        <p class="coach-row__label">Что пикают на Инте</p>
+        <p class="pick-table__note">Префикс титула срабатывает, когда игрок берёт героя своей группы —
+          значит выбирать его нужно с оглядкой на то, сколько раз его берут за карту, сколько сносят и как часто с ним выигрывают.</p>
+        <div class="pick-table__rows" id="pick-table-rows"></div>
+        <div class="pick-table__source">
+          <span class="chip chip--source is-active">Только Инт</span>
+          <span class="pick-table__note-sm">По умолчанию считаем по картам самого The International — другой пул,
+            другая мета, другое давление серии. Режим «Сезон целиком» устойчивее, но размывает форму турнира.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-block">
+      <p class="result-block__eyebrow">Результат</p>
+      <h3 class="result-block__title">Лучшие связки</h3>
+
+      <div class="result-grid" id="result-grid"></div>
+    </div>
+
+    <div class="fantasy-actions">
+      <button class="btn btn--ghost">Взять подсказку</button>
+      <button class="btn btn--primary">Подобрать состав</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Неофициальный фан-проект. Не аффилирован с Valve. Составы и коэффициенты — иллюстративные.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
