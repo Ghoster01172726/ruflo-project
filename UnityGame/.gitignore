@@ -48,3 +48,7 @@ Thumbs.db
 .claude-flow/sessions/
 .swarm/
 ruvector.db
+
+# ruflo per-folder runtime caches must never live inside the Unity Assets tree
+Assets/**/.claude-flow/
+Assets/.claude-flow/
