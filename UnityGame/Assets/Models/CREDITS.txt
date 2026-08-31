@@ -1,0 +1,4 @@
+Third-party 3D models used in this project (source: poly.pizza), both under CC BY 3.0 — attribution required:
+
+- Conveyor/ConveyorBelt.glb — "Conveyor Belt" by Sierra Maple (poly.pizza), CC BY 3.0.
+- Hands/FpsArms.glb — "Rigged Fps Arms" by Player11132 (poly.pizza), CC BY 3.0.
