@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-08-31T07:40:28.987Z",
+  "projectRoot": "/mnt/c/UnityProjects/WarehouseSort/ruflo-project/UnityGame",
+  "structure": {
+    "hasPackageJson": false,
+    "hasTsConfig": false,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1788162029001
+}

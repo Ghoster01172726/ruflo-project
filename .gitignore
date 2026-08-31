@@ -16,6 +16,16 @@
 ruvector.db
 .serena/project.local.yml
 
+# Tunnel deployment secrets (reality private key, uuid, short-id) — never commit
+server/.secrets/
+
+# Android build output / local toolchain state
+android/libs/*.aar
+android/local.properties
+android/.gradle/
+android/build/
+android/*/build/
+
 # Caches
 .pytest_cache/
 
