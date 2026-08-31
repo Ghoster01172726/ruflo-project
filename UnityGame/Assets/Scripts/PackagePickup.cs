@@ -1,10 +1,18 @@
 using UnityEngine;
 
-// Этот скрипт вешается на саму посылку (на префаб куба).
-// Он отвечает за: 1) хранение категории посылки, 2) визуальный цвет по категории,
-// 3) логику "взять/нести/положить" от первого лица (см. PackageGrabber.cs).
+// Этот скрипт вешается на саму посылку (на префаб куба, оставшийся только как
+// носитель Collider/Rigidbody — собственный меш куба отключается ниже).
+// Он отвечает за: 1) хранение категории посылки, 2) подстановку настоящей 3D-модели
+// (коробка или конверт) по категории, 3) логику "взять/нести/положить" от первого
+// лица (см. PackageGrabber.cs).
 public class PackagePickup : MonoBehaviour
 {
+    // Модели посылок (Poly Pizza, CC0): "Cardboard Box Closed" by Kenney — для
+    // Normal/Heavy, "Envelope" by reyshapes — для Fragile ("письмо"). Назначаются
+    // один раз через Warehouse Tools/Setup Package Visuals (WarehouseBuilder.Packages.cs).
+    [SerializeField] private GameObject boxModelPrefab;
+    [SerializeField] private GameObject envelopeModelPrefab;
+
     // Приватное поле для хранения категории. Снаружи его напрямую не меняют —
     // для этого есть метод SetCategory() и свойство Category ниже.
     private PackageCategory category;
@@ -24,6 +32,10 @@ public class PackagePickup : MonoBehaviour
     // переноски коллайдер отключается и включается обратно при Release().
     private Collider packageCollider;
 
+    // Текущий заспавненный инстанс модели (коробки/конверта) — пересоздаётся при смене
+    // категории, чтобы не плодить старые меши друг под другом.
+    private GameObject visualInstance;
+
     // Свойство (property) — как @property в Python: снаружи выглядит как обычное поле
     // (someScript.Category), но на самом деле это метод "только для чтения".
     // "=> category;" — сокращённая запись "get { return category; }".
@@ -32,11 +44,15 @@ public class PackagePickup : MonoBehaviour
     // Нужно ConveyorLoopMover-у: пока посылку держат в руках, конвейер её не толкает.
     public bool IsHeld => isHeld;
 
-    // Форма/размер по категории — чтобы игрок отличал посылки не только по цвету,
-    // но и по силуэту: Fragile выглядит как плоское "письмо", Heavy — как крупная коробка.
-    private static readonly Vector3 FragileScale = new Vector3(0.55f, 0.12f, 0.4f);
-    private static readonly Vector3 NormalScale = new Vector3(0.8f, 0.8f, 0.8f);
-    private static readonly Vector3 HeavyScale = new Vector3(1.15f, 1.15f, 1.15f);
+    // Размер твёрдого коллайдера по категории (форма всегда box — используется только
+    // для физики/захвата, не для визуала) и целевой видимый размер модели (по наибольшему
+    // габариту) — так игрок отличает посылки не только по модели, но и по размеру.
+    private static readonly Vector3 FragileColliderSize = new Vector3(0.28f, 0.02f, 0.22f);
+    private static readonly Vector3 NormalColliderSize = new Vector3(0.3f, 0.3f, 0.3f);
+    private static readonly Vector3 HeavyColliderSize = new Vector3(0.45f, 0.45f, 0.45f);
+    private const float FragileVisualSize = 0.28f;
+    private const float NormalVisualSize = 0.3f;
+    private const float HeavyVisualSize = 0.45f;
 
     // Start() Unity вызывает один раз, когда объект впервые появляется на сцене —
     // аналог __init__ в Python, только вызывается не при создании инстанса класса,
@@ -55,32 +71,83 @@ public class PackagePickup : MonoBehaviour
         ApplyCategoryVisual();
     }
 
-    // Раскрашиваем куб и меняем его форму/размер в зависимости от категории — чтобы
-    // игрок мог отличать посылки друг от друга на глаз, без чтения текста.
+    // Подставляем настоящую модель (коробка/конверт) и коллайдер нужного размера —
+    // так игрок отличает посылки друг от друга по виду, без чтения текста.
     private void ApplyCategoryVisual()
     {
-        // GetComponent<Renderer>() ищет компонент, отвечающий за отображение объекта
-        // (то, что рисует его на экране материалом/цветом). У куба он есть по умолчанию.
-        Renderer rend = GetComponent<Renderer>();
+        if (visualInstance != null)
+        {
+            Destroy(visualInstance);
+            visualInstance = null;
+        }
+
+        GameObject modelPrefab;
+        Vector3 colliderSize;
+        float visualSize;
 
         // switch по enum — аналог Python if/elif цепочки или match-case (3.10+),
         // только компилятор проверяет, что мы не забыли ни один вариант enum.
         switch (category)
         {
             case PackageCategory.Fragile:
-                if (rend != null) rend.material.color = Color.yellow;
-                transform.localScale = FragileScale;
+                modelPrefab = envelopeModelPrefab;
+                colliderSize = FragileColliderSize;
+                visualSize = FragileVisualSize;
                 break;
             case PackageCategory.Heavy:
-                if (rend != null) rend.material.color = Color.red;
-                transform.localScale = HeavyScale;
+                modelPrefab = boxModelPrefab;
+                colliderSize = HeavyColliderSize;
+                visualSize = HeavyVisualSize;
                 break;
             case PackageCategory.Normal:
             default:
-                if (rend != null) rend.material.color = Color.white;
-                transform.localScale = NormalScale;
+                modelPrefab = boxModelPrefab;
+                colliderSize = NormalColliderSize;
+                visualSize = NormalVisualSize;
                 break;
         }
+
+        if (packageCollider is BoxCollider box)
+        {
+            box.size = colliderSize;
+        }
+
+        if (modelPrefab == null)
+        {
+            return;
+        }
+
+        visualInstance = Instantiate(modelPrefab, transform);
+        visualInstance.transform.localPosition = Vector3.zero;
+        visualInstance.transform.localRotation = Quaternion.identity;
+        visualInstance.transform.localScale = Vector3.one;
+        FitVisualScale(visualInstance, visualSize);
+    }
+
+    // Модели приходят в произвольном родном масштабе (см. WarehouseBuilder.Packages.cs) —
+    // растягиваем/сжимаем равномерно так, чтобы наибольший габарит стал равен targetSize.
+    private static void FitVisualScale(GameObject go, float targetSize)
+    {
+        Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            return;
+        }
+
+        Bounds bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            bounds.Encapsulate(renderers[i].bounds);
+        }
+
+        float maxDimension = Mathf.Max(bounds.size.x, Mathf.Max(bounds.size.y, bounds.size.z));
+        if (maxDimension <= 0.0001f)
+        {
+            return;
+        }
+
+        float scaleFactor = targetSize / maxDimension;
+        go.transform.localScale *= scaleFactor;
     }
 
     // Вызывается снаружи из PackageGrabber, когда игрок посмотрел на посылку и нажал
