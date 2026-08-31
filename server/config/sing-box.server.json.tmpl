@@ -1,0 +1,42 @@
+{
+  "log": {
+    "level": "warn",
+    "timestamp": true
+  },
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-reality-in",
+      "listen": "::",
+      "listen_port": __LISTEN_PORT__,
+      "users": [
+        {
+          "name": "owner",
+          "uuid": "__UUID__",
+          "flow": "xtls-rprx-vision"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "__DEST_SNI__",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "__DEST_SNI__",
+            "server_port": 443
+          },
+          "private_key": "__REALITY_PRIVATE_KEY__",
+          "short_id": [
+            "__SHORT_ID__"
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ]
+}
